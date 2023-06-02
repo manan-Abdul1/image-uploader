@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 
 const ImagePreview = ({ email, isFormSubmitted }) => {
   const [imageData, setImageData] = useState('');
@@ -39,5 +40,9 @@ const ImagePreview = ({ email, isFormSubmitted }) => {
     </div>
   );
 };
+ImagePreview.propTypes = {
+    email: PropTypes.string.isRequired,
+    isFormSubmitted: PropTypes.bool.isRequired,
+  };
 
 export default ImagePreview;
