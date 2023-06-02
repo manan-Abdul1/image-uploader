@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
+import ImagePreview from './components/ImagePreview';
 
 function App() {
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -17,29 +19,29 @@ function App() {
   };
 
   const handleFileUpload = (event) => {
-    setFormData( {
+    setFormData({
       ...formData,
       avatar: event.target.files[0]
-    });    
+    });
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     // Create a FormData object to send the form data and image file
     const formDataToSend = new FormData();
     formDataToSend.append('name', formData.name);
     formDataToSend.append('email', formData.email);
     formDataToSend.append('avatar', formData.avatar);
-  
+
     try {
       // Send the form data to the backend server
-      const response = await axios.post('/api/register', formDataToSend, {
+      const response = await axios.post('http://localhost:5500/api/register', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-  
+      setIsFormSubmitted(true);
       // Handle the response as needed
       console.log(response.data);
     } catch (error) {
@@ -47,7 +49,7 @@ function App() {
       console.error(error);
     }
   };
-  
+
 
   return (
     <div className="form-container">
@@ -55,30 +57,32 @@ function App() {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="name">Name</label>
-          <input type="text" id="name" value={formData.name} onChange={(e) => handleInputChange(e.target.value)} required />
+          <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />
         </div>
         <div className="form-group">
           <label htmlFor="email">Email</label>
-          <input type="email" id="email" value={formData.email} onChange={(e) => handleInputChange(e.target.value)} required />
+          <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required />
         </div>
         <div className="form-group">
-          <label htmlFor="avatar">Avatar</label>
-          <input type="file" id="avatar" onChange={handleFileUpload} accept="image/*" />
+          <label htmlFor="avatar">Profile</label>
+          <input type="file" id="avatar" name="avatar" onChange={handleFileUpload} accept="image/*" />
         </div>
         <button type="submit">Register</button>
       </form>
       <div className="uploaded-images">
-        {formData.avatar && (
+       <ImagePreview email={formData.email} isFormSubmitted={isFormSubmitted}/>
+        {/* {formData.avatar && (
           <div className="image-preview">
             <img src={URL.createObjectURL(formData.avatar)} alt="Uploaded Image" />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
 }
 
 export default App;
+
 
 
 // For using multiple images
